@@ -30,7 +30,7 @@ public class ValidationResponse : BaseValidationResponse
   public ValidationData Data { get; set; }
 }
 
-public class ValidationResponse<T> :  BaseValidationResponse
+public class ValidationResponse<T> : BaseValidationResponse where T : ValidationData
 {
   [JsonProperty("data")]
   public T Data { get; set; }
