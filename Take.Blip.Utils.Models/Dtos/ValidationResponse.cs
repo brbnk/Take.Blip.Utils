@@ -6,7 +6,7 @@ namespace Take.Blip.Utils.Models.Dtos;
 /// <summary>
 /// BlipData model class.
 /// </summary>
-public class ValidationResponse
+public class BaseValidationResponse
 {
   /// <summary>
   /// Data identifier
@@ -15,14 +15,23 @@ public class ValidationResponse
   public Guid Id => Guid.NewGuid();
 
   /// <summary>
-  /// Formatted and validated data.
-  /// </summary>
-  [JsonProperty("data")]
-  public ValidationData Data { get; set; }
-
-  /// <summary>
   /// Datetime when the response was generated (GMT-0).
   /// </summary>
   [JsonProperty("requested_at")]
   public RequestAt RequestedAt => new RequestAt();
+}
+
+public class ValidationResponse : BaseValidationResponse
+{
+  /// <summary>
+  /// Formatted and validated data.
+  /// </summary>
+  [JsonProperty("data")]
+  public ValidationData Data { get; set; }
+}
+
+public class ValidationResponse<T> :  BaseValidationResponse
+{
+  [JsonProperty("data")]
+  public T Data { get; set; }
 }

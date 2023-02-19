@@ -1,14 +1,12 @@
 using System.Text.RegularExpressions;
 using Take.Blip.Utils.Models.Base;
+using Take.Blip.Utils.Models.Dtos;
+using Take.Blip.Utils.Models.Dtos.Input;
 
-namespace Take.Blip.Utils.Models.Inputs;
+namespace Take.Blip.Utils.Models.Validators;
 
 public sealed class CPFValidator : DataValidation
-{
-  
-  // [JsonProperty("masked")]
-  // public string Masked => GetMaskedCpf();
-
+{  
   private const int CPF_LENGTH = 11;
   private const string CPF_FORMAT = "{0}.{1}.{2}-{3}";
   private const string MASKED_CPF_FORMAT = "***.***.{0}-{1}";
@@ -35,6 +33,22 @@ public sealed class CPFValidator : DataValidation
   protected override string Cleaner(string input) => 
     Regex.Replace(input.Trim(), @"\D+", "", RegexOptions.IgnoreCase);
 
+  public override BaseValidationResponse ProcessValidation()
+  {
+    var validation = (ValidationResponse) base.ProcessValidation();
+
+    var cpfResponse = new CPFValidationResponse(validation.Data)
+    {
+      Masked = validation.Data.IsValid ? 
+        GetMaskedCpf(validation.Data.Value) : Constants.UNEXPECTED_INPUT
+    };
+
+    return new ValidationResponse<CPFValidationResponse> 
+    { 
+      Data = cpfResponse 
+    };
+  }
+  
   #region CPF private methods
   private static bool HasValidLength(string cpf) => 
     !string.IsNullOrWhiteSpace(cpf) && cpf.Length == CPF_LENGTH;
@@ -81,10 +95,7 @@ public sealed class CPFValidator : DataValidation
 		return cpf.EndsWith(firstDigit + secondDigit);
   }
 
-  // private string GetMaskedCpf()
-  // {
-  //   var cpf = CleanedInput;
-  //   return !IsValid ? UNEXPECTED_INPUT : string.Format(MASKED_CPF_FORMAT, cpf.Substring(6, 3), cpf.Substring(9, 2));
-  // }
+  private string GetMaskedCpf(string cpf) => 
+    string.Format(MASKED_CPF_FORMAT, cpf.Substring(6, 3), cpf.Substring(9, 2));
   #endregion
 }

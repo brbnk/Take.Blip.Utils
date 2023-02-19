@@ -1,12 +1,10 @@
 using Take.Blip.Utils.Models.Dtos;
-using Take.Blip.Utils.Models.Inputs.Interfaces;
+using Take.Blip.Utils.Models.Validators.Interfaces;
 
 namespace Take.Blip.Utils.Models.Base;
 
 public abstract class DataValidation : IValidationResponse
-{
-  private const string UNEXPECTED_INPUT = "input inesperado";
-  
+{ 
   private bool _isValid;
   private string _input;
   private string _cleanedInput;
@@ -30,11 +28,11 @@ public abstract class DataValidation : IValidationResponse
   }
 
   private string FormatInput(Func<string, string> formatter) =>
-    _isValid ? formatter(_input) : UNEXPECTED_INPUT;
+    _isValid ? formatter(_cleanedInput) : Constants.UNEXPECTED_INPUT;
 
   private bool ValidateInput(Func<string, bool> validator) => validator(_cleanedInput);
 
-  public ValidationResponse ProcessValidation() 
+  public virtual BaseValidationResponse ProcessValidation() 
   {
     var cleanedInput = CleanInput(Cleaner);
 

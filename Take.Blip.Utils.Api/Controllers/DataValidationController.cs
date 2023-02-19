@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Take.Blip.Utils.Facade.Interfaces;
-using Take.Blip.Utils.Models.Inputs;
+using Take.Blip.Utils.Models.Validators;
 
 namespace Take.Blip.Utils.Api.Controllers;
 

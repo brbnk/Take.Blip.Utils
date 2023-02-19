@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using Take.Blip.Utils.Models.Base;
 
-namespace Take.Blip.Utils.Models.Inputs;
+namespace Take.Blip.Utils.Models.Validators;
 
 public sealed class BirthDateValidator : DataValidation
 {

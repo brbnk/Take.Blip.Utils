@@ -6,4 +6,5 @@ public static class Constants
   public const string DEFAULT_TIME_FORMAT = "HH:mm:ss";
   public const string DEFAULT_DATETIME_FORMAT = $"{DEFAULT_DATE_FORMAT} {DEFAULT_TIME_FORMAT}";
   public const double DEFAULT_OFFSET_DATETIME = -3;
+  public const string UNEXPECTED_INPUT = "input inesperado";
 }
