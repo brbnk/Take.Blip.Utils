@@ -1,20 +1,15 @@
 using Take.Blip.Utils.Facade.Interfaces;
-using Take.Blip.Utils.Models.Base;
-using Take.Blip.Utils.Models.Inputs;
+using Take.Blip.Utils.Models.Dtos;
+using Take.Blip.Utils.Models.Inputs.Interfaces;
 
 namespace Take.Blip.Utils.Facade.DataValidation;
 
 public sealed class DataValidationFacade : IDataValidationFacade
 {
-  public Response<CPFValidator> ValidateCpf(string cpf)
+  public ValidationResponse Validate(Type validatorType, string input)
   {
-    var validatedCpf = new CPFValidator(cpf);
+    var validator = (IValidationResponse) Activator.CreateInstance(validatorType, new object[] { input });
 
-    var response = new Response<CPFValidator> 
-    { 
-      Data = validatedCpf 
-    };
-
-    return response;
+    return validator.ProcessValidation();
   }
 }

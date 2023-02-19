@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Take.Blip.Utils.Facade.Interfaces;
+using Take.Blip.Utils.Models.Inputs;
 
 namespace Take.Blip.Utils.Api.Controllers;
 
@@ -16,7 +17,17 @@ public sealed class DataValidationController : ControllerBase
   [HttpGet("cpf")]
   public IActionResult ValidateCpf([FromHeader] string cpf)
   {
-    var data = _dataValidationFacade.ValidateCpf(cpf);
+    var data = _dataValidationFacade
+      .Validate(typeof(CPFValidator), cpf);
+
+    return Ok(data);
+  }
+
+  [HttpGet("birthDate")]
+  public IActionResult ValidateBirthDate([FromHeader] string birthDate)
+  {
+    var data = _dataValidationFacade
+      .Validate(typeof(BirthDateValidator), birthDate);
 
     return Ok(data);
   }

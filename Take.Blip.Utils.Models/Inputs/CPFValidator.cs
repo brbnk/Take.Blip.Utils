@@ -1,5 +1,4 @@
 using System.Text.RegularExpressions;
-using Newtonsoft.Json;
 using Take.Blip.Utils.Models.Base;
 
 namespace Take.Blip.Utils.Models.Inputs;
@@ -7,8 +6,8 @@ namespace Take.Blip.Utils.Models.Inputs;
 public sealed class CPFValidator : DataValidation
 {
   
-  [JsonProperty("masked")]
-  public string Masked => GetMaskedCpf();
+  // [JsonProperty("masked")]
+  // public string Masked => GetMaskedCpf();
 
   private const int CPF_LENGTH = 11;
   private const string CPF_FORMAT = "{0}.{1}.{2}-{3}";
@@ -18,16 +17,14 @@ public sealed class CPFValidator : DataValidation
   { 
   }
 
-  protected override string FormatData(string cpf) => IsValid ? 
+  protected override string Formatter(string cpf) => 
     string.Format(CPF_FORMAT, 
       cpf.Substring(0, 3), 
       cpf.Substring(3, 3), 
       cpf.Substring(6, 3), 
-      cpf.Substring(9, 2)) : UNEXPECTED_INPUT;
+      cpf.Substring(9, 2));
 
-  protected override string GetValue(string cpf) => IsValid ? cpf : UNEXPECTED_INPUT;
-
-  protected override bool ValidateData(string cpf)
+  protected override bool Validator(string cpf)
   {
       if (!HasValidLength(cpf) || HasAllDigitsEqual(cpf))
         return false;
@@ -35,7 +32,7 @@ public sealed class CPFValidator : DataValidation
       return IsValidCpf(cpf);
   }
 
-  protected override string CleanInput(string input) => 
+  protected override string Cleaner(string input) => 
     Regex.Replace(input.Trim(), @"\D+", "", RegexOptions.IgnoreCase);
 
   #region CPF private methods
@@ -84,10 +81,10 @@ public sealed class CPFValidator : DataValidation
 		return cpf.EndsWith(firstDigit + secondDigit);
   }
 
-  private string GetMaskedCpf()
-  {
-    var cpf = CleanedInput;
-    return !IsValid ? UNEXPECTED_INPUT : string.Format(MASKED_CPF_FORMAT, cpf.Substring(6, 3), cpf.Substring(9, 2));
-  }
+  // private string GetMaskedCpf()
+  // {
+  //   var cpf = CleanedInput;
+  //   return !IsValid ? UNEXPECTED_INPUT : string.Format(MASKED_CPF_FORMAT, cpf.Substring(6, 3), cpf.Substring(9, 2));
+  // }
   #endregion
 }

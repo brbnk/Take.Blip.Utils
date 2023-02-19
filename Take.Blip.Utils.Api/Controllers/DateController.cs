@@ -1,14 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Take.Blip.Utils.Facade.Date.Interfaces;
+using Take.Blip.Utils.Models;
 
 namespace Take.Blip.Utils.Api;
 
 [Route("api/[controller]")]
 public class DateController : ControllerBase
 {
-  private const double DEFAULT_OFFSET_DATETIME = -3;
-  private const string DEFAULT_DATE_FORMAT = "dd/MM/yyyy HH:mm:ss";
-
   private readonly IDateHandlerFacade _dateHandlerFacade;
 
   public DateController(IDateHandlerFacade dateHandlerFacade)
@@ -23,7 +21,7 @@ public class DateController : ControllerBase
   /// <returns> Current datetime </returns>
   [HttpGet("now")]
   public IActionResult GetCurrentDate(
-    [FromQuery] double offSetDateTime = DEFAULT_OFFSET_DATETIME)
+    [FromQuery] double offSetDateTime = Constants.DEFAULT_OFFSET_DATETIME)
   {
     var date = _dateHandlerFacade
         .GetCurrentDate(offSetDateTime);
@@ -40,7 +38,7 @@ public class DateController : ControllerBase
   [HttpGet("interval")]
   public IActionResult GetIntervalBetweenCurrentAndPreviousDate(
     [FromQuery] string previousDate,
-    [FromQuery] double offSetDateTime = DEFAULT_OFFSET_DATETIME)
+    [FromQuery] double offSetDateTime = Constants.DEFAULT_OFFSET_DATETIME)
   {
     var interval = _dateHandlerFacade
       .GetIntervalBetweenCurrentAndPreviousDate(previousDate, offSetDateTime);  
@@ -57,7 +55,7 @@ public class DateController : ControllerBase
   [HttpGet("format")]
   public IActionResult GetFormattedDate(
     [FromQuery] string date,
-    [FromQuery] string format = DEFAULT_DATE_FORMAT)
+    [FromQuery] string format = Constants.DEFAULT_DATETIME_FORMAT)
   {
     var formattedDate = _dateHandlerFacade
       .GetFormattedDate(date, format);

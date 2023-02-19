@@ -1,11 +1,12 @@
 using Newtonsoft.Json;
+using Take.Blip.Utils.Models.Base;
 
-namespace Take.Blip.Utils.Models.Base;
+namespace Take.Blip.Utils.Models.Dtos;
 
 /// <summary>
 /// BlipData model class.
 /// </summary>
-public class Response<T> where T : DataValidation
+public class ValidationResponse
 {
   /// <summary>
   /// Data identifier
@@ -17,11 +18,11 @@ public class Response<T> where T : DataValidation
   /// Formatted and validated data.
   /// </summary>
   [JsonProperty("data")]
-  public T Data { get; set; }
+  public ValidationData Data { get; set; }
 
   /// <summary>
   /// Datetime when the response was generated (GMT-0).
   /// </summary>
   [JsonProperty("requested_at")]
-  public DateTime RequestedAt => DateTime.UtcNow;
+  public RequestAt RequestedAt => new RequestAt();
 }
