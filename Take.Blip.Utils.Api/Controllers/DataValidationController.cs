@@ -7,17 +7,17 @@ namespace Take.Blip.Utils.Api.Controllers;
 [Route("api/[controller]")]
 public sealed class DataValidatorController : ControllerBase
 {
-  private readonly IDataValidatorFacade _DataValidatorFacade;
+  private readonly IDataValidatorFacade _dataValidatorFacade;
 
   public DataValidatorController(IDataValidatorFacade DataValidatorFacade)
   {
-    _DataValidatorFacade = DataValidatorFacade;
+    _dataValidatorFacade = DataValidatorFacade;
   }
 
   [HttpGet("cpf")]
   public IActionResult ValidateCpf([FromHeader] string cpf)
   {
-    var data = _DataValidatorFacade
+    var data = _dataValidatorFacade
       .Validate(typeof(CPFValidator), cpf);
 
     return Ok(data);
@@ -26,7 +26,7 @@ public sealed class DataValidatorController : ControllerBase
   [HttpGet("birthDate")]
   public IActionResult ValidateBirthDate([FromHeader] string birthDate)
   {
-    var data = _DataValidatorFacade
+    var data = _dataValidatorFacade
       .Validate(typeof(BirthDateValidator), birthDate);
 
     return Ok(data);
@@ -35,7 +35,7 @@ public sealed class DataValidatorController : ControllerBase
   [HttpGet("money")]
   public IActionResult ValidateMoney([FromQuery] string money)
   {
-    var data = _DataValidatorFacade
+    var data = _dataValidatorFacade
       .Validate(typeof(MoneyValidator), money);
 
     return Ok(data);
