@@ -2,7 +2,7 @@ using Take.Blip.Utils.Models.Base;
 
 namespace Take.Blip.Utils.Models;
 
-public sealed class DateInput : DataValidation
+public sealed class DateInput : DataValidator
 {
   private const string FULL_DATETIME_FORMAT = "dd/MM/yyyy HH:mm:ss";
   private const string DATE_FORMAT = "dd/MM/yyyy";

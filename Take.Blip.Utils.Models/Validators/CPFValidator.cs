@@ -5,7 +5,7 @@ using Take.Blip.Utils.Models.Dtos.Input;
 
 namespace Take.Blip.Utils.Models.Validators;
 
-public sealed class CPFValidator : DataValidation
+public sealed class CPFValidator : DataValidator
 {  
   private const int CPF_LENGTH = 11;
   private const string CPF_FORMAT = "{0}.{1}.{2}-{3}";
@@ -43,10 +43,7 @@ public sealed class CPFValidator : DataValidation
         GetMaskedCpf(validation.Data.Value) : Constants.UNEXPECTED_INPUT
     };
 
-    return new ValidationResponse<CPFValidationResponse> 
-    { 
-      Data = cpfResponse 
-    };
+    return new ValidationResponse<CPFValidationResponse>(cpfResponse);
   }
   
   #region CPF private methods
@@ -55,6 +52,9 @@ public sealed class CPFValidator : DataValidation
 
   private static bool HasAllDigitsEqual(string cpf) => 
     cpf.Distinct().Count() == 1;
+    
+  private string GetMaskedCpf(string cpf) => 
+    string.Format(MASKED_CPF_FORMAT, cpf.Substring(6, 3), cpf.Substring(9, 2));
 
   private static string GetDigit(int sum) 
   {
@@ -94,8 +94,5 @@ public sealed class CPFValidator : DataValidation
 
 		return cpf.EndsWith(firstDigit + secondDigit);
   }
-
-  private string GetMaskedCpf(string cpf) => 
-    string.Format(MASKED_CPF_FORMAT, cpf.Substring(6, 3), cpf.Substring(9, 2));
   #endregion
 }

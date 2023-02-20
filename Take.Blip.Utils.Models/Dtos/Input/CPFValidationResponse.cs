@@ -8,11 +8,7 @@ public class CPFValidationResponse : ValidationData
   public string Masked { get; set; }
 
   // Composition
-  public CPFValidationResponse(ValidationData data)
+  public CPFValidationResponse(ValidationData data) : base(data)
   {
-      Formatted = data.Formatted;
-      Input = data.Input;
-      IsValid = data.IsValid;
-      Value = data.Value;
   }
 }

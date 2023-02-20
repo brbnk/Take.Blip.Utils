@@ -1,5 +1,4 @@
 using Newtonsoft.Json;
-using Take.Blip.Utils.Models.Base;
 
 namespace Take.Blip.Utils.Models.Dtos;
 
@@ -32,6 +31,16 @@ public class ValidationResponse : BaseValidationResponse
 
 public class ValidationResponse<T> : BaseValidationResponse where T : ValidationData
 {
+  public ValidationResponse()
+  {
+    
+  }
+
+  public ValidationResponse(T data)
+  {
+    Data = data;
+  }
+
   [JsonProperty("data")]
   public T Data { get; set; }
 }

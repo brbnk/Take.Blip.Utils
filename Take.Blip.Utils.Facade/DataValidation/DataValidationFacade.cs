@@ -2,9 +2,9 @@ using Take.Blip.Utils.Facade.Interfaces;
 using Take.Blip.Utils.Models.Dtos;
 using Take.Blip.Utils.Models.Validators.Interfaces;
 
-namespace Take.Blip.Utils.Facade.DataValidation;
+namespace Take.Blip.Utils.Facade.DataValidator;
 
-public sealed class DataValidationFacade : IDataValidationFacade
+public sealed class DataValidatorFacade : IDataValidatorFacade
 {
   public BaseValidationResponse Validate(Type validatorType, string input)
   {

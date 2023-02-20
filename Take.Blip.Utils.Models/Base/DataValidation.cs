@@ -3,7 +3,7 @@ using Take.Blip.Utils.Models.Validators.Interfaces;
 
 namespace Take.Blip.Utils.Models.Base;
 
-public abstract class DataValidation : IValidationResponse
+public abstract class DataValidator : IValidationResponse
 { 
   private bool _isValid;
   private string _input;
@@ -11,7 +11,7 @@ public abstract class DataValidation : IValidationResponse
 
   protected bool IsValid => _isValid;
 
-  public DataValidation(string input)
+  public DataValidator(string input)
   {
     _input = input;
   }
@@ -19,6 +19,7 @@ public abstract class DataValidation : IValidationResponse
   protected abstract string Cleaner(string input);
   protected abstract string Formatter(string cleanedInput);
   protected abstract bool Validator(string cleanedInput);
+  protected virtual string Responser(string cleanedInput) => cleanedInput;
   
   private string CleanInput(Func<string, string> cleaner) 
   {
@@ -30,7 +31,11 @@ public abstract class DataValidation : IValidationResponse
   private string FormatInput(Func<string, string> formatter) =>
     _isValid ? formatter(_cleanedInput) : Constants.UNEXPECTED_INPUT;
 
-  private bool ValidateInput(Func<string, bool> validator) => validator(_cleanedInput);
+  private bool ValidateInput(Func<string, bool> validator) => 
+    validator(_cleanedInput);
+
+  private string GetValue(Func<string, string> responser) =>
+    _isValid ? responser(_cleanedInput) : Constants.UNEXPECTED_INPUT;
 
   public virtual BaseValidationResponse ProcessValidation() 
   {
@@ -39,13 +44,15 @@ public abstract class DataValidation : IValidationResponse
     _isValid = ValidateInput(Validator);
 
     var formatted = FormatInput(Formatter);
+    
+    var value = GetValue(Responser);
 
     var data = new ValidationData 
     {
       Input = _input,
       IsValid = _isValid,
       Formatted = formatted,
-      Value = cleanedInput
+      Value = value
     };
 
     var response = new ValidationResponse { Data = data };
