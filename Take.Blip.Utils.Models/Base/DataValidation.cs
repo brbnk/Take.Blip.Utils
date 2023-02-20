@@ -1,58 +1,62 @@
-using Newtonsoft.Json;
+using Take.Blip.Utils.Models.Dtos;
+using Take.Blip.Utils.Models.Validators.Interfaces;
 
 namespace Take.Blip.Utils.Models.Base;
 
-public abstract class DataValidation
-{
-  protected const string UNEXPECTED_INPUT = "input inesperado";
-  
-  protected string _cleanedInput;
+public abstract class DataValidator : IValidationResponse
+{ 
   private bool _isValid;
   private string _input;
-  private string _formatted;
-  private string _value;
+  private string _cleanedInput;
 
-  public DataValidation(string input)
+  protected bool IsValid => _isValid;
+
+  public DataValidator(string input)
   {
     _input = input;
-    _cleanedInput = CleanInput(input);
-    _isValid = ValidateData(_cleanedInput);
-    _formatted = FormatData(_cleanedInput);
-    _value = GetValue(_cleanedInput);
   }
 
-  /// <summary>
-  /// Input sent by blip user
-  /// </summary>
-  [JsonProperty("input")]
-  public string Input => _input;
-
-  /// <summary>
-  /// Sanitized input
-  /// </summary>
-  [JsonProperty("cleaned")]
-  public string CleanedInput => _cleanedInput;
-
-  /// <summary>
-  /// Value to be used on blip
-  /// </summary>
-  [JsonProperty("value")]
-  public string Value => _value;
-
-  /// <summary>
-  /// Data validation
-  /// </summary>
-  [JsonProperty("isValid")]
-  public bool IsValid => _isValid;
-
-  /// <summary>
-  /// Formatted data
-  /// </summary>
-  [JsonProperty("formatted")]
-  public string Formatted => _formatted;
+  protected abstract string Cleaner(string input);
+  protected abstract string Formatter(string cleanedInput);
+  protected abstract bool Validator(string cleanedInput);
+  protected virtual string Responser(string cleanedInput) => cleanedInput;
   
-  protected abstract bool ValidateData(string cleanedInput);
-  protected abstract string FormatData(string cleanedInput);
-  protected abstract string GetValue(string cleanedInput);
-  protected virtual string CleanInput(string input) => input.Trim();
+  private string CleanInput(Func<string, string> cleaner) 
+  {
+    _cleanedInput = cleaner(_input);
+
+    return _cleanedInput; 
+  }
+
+  private string FormatInput(Func<string, string> formatter) =>
+    _isValid ? formatter(_cleanedInput) : Constants.UNEXPECTED_INPUT;
+
+  private bool ValidateInput(Func<string, bool> validator) => 
+    validator(_cleanedInput);
+
+  private string GetValue(Func<string, string> responser) =>
+    _isValid ? responser(_cleanedInput) : Constants.UNEXPECTED_INPUT;
+
+  public virtual BaseValidationResponse ProcessValidation() 
+  {
+    var cleanedInput = CleanInput(Cleaner);
+
+    _isValid = ValidateInput(Validator);
+
+    var formatted = FormatInput(Formatter);
+    
+    var value = GetValue(Responser);
+
+    var data = new ValidationData 
+    {
+      Input = _input,
+      IsValid = _isValid,
+      Formatted = formatted,
+      Value = value
+    };
+
+    var response = new ValidationResponse { Data = data };
+
+    return response;
+  }
 }

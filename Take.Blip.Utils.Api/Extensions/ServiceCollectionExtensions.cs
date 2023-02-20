@@ -1,4 +1,4 @@
-using Take.Blip.Utils.Facade.DataValidation;
+using Take.Blip.Utils.Facade.DataValidator;
 using Take.Blip.Utils.Facade.Date;
 using Take.Blip.Utils.Facade.Date.Interfaces;
 using Take.Blip.Utils.Facade.Interfaces;
@@ -11,7 +11,7 @@ public static class ServiceCollectionExtensions
   {
     service
       .AddScoped<IDateHandlerFacade, DateHandlerFacade>()
-      .AddScoped<IDataValidationFacade, DataValidationFacade>();
+      .AddScoped<IDataValidatorFacade, DataValidatorFacade>();
 
     return service;
   }

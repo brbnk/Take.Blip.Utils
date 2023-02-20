@@ -1,15 +1,12 @@
 using System.Text.RegularExpressions;
-using Newtonsoft.Json;
 using Take.Blip.Utils.Models.Base;
+using Take.Blip.Utils.Models.Dtos;
+using Take.Blip.Utils.Models.Dtos.Input;
 
-namespace Take.Blip.Utils.Models.Inputs;
+namespace Take.Blip.Utils.Models.Validators;
 
-public sealed class CPFValidator : DataValidation
-{
-  
-  [JsonProperty("masked")]
-  public string Masked => GetMaskedCpf();
-
+public sealed class CPFValidator : DataValidator
+{  
   private const int CPF_LENGTH = 11;
   private const string CPF_FORMAT = "{0}.{1}.{2}-{3}";
   private const string MASKED_CPF_FORMAT = "***.***.{0}-{1}";
@@ -18,16 +15,14 @@ public sealed class CPFValidator : DataValidation
   { 
   }
 
-  protected override string FormatData(string cpf) => IsValid ? 
+  protected override string Formatter(string cpf) => 
     string.Format(CPF_FORMAT, 
       cpf.Substring(0, 3), 
       cpf.Substring(3, 3), 
       cpf.Substring(6, 3), 
-      cpf.Substring(9, 2)) : UNEXPECTED_INPUT;
+      cpf.Substring(9, 2));
 
-  protected override string GetValue(string cpf) => IsValid ? cpf : UNEXPECTED_INPUT;
-
-  protected override bool ValidateData(string cpf)
+  protected override bool Validator(string cpf)
   {
       if (!HasValidLength(cpf) || HasAllDigitsEqual(cpf))
         return false;
@@ -35,15 +30,31 @@ public sealed class CPFValidator : DataValidation
       return IsValidCpf(cpf);
   }
 
-  protected override string CleanInput(string input) => 
+  protected override string Cleaner(string input) => 
     Regex.Replace(input.Trim(), @"\D+", "", RegexOptions.IgnoreCase);
 
+  public override BaseValidationResponse ProcessValidation()
+  {
+    var validation = (ValidationResponse) base.ProcessValidation();
+
+    var cpfResponse = new CPFValidationResponse(validation.Data)
+    {
+      Masked = validation.Data.IsValid ? 
+        GetMaskedCpf(validation.Data.Value) : Constants.UNEXPECTED_INPUT
+    };
+
+    return new ValidationResponse<CPFValidationResponse>(cpfResponse);
+  }
+  
   #region CPF private methods
   private static bool HasValidLength(string cpf) => 
     !string.IsNullOrWhiteSpace(cpf) && cpf.Length == CPF_LENGTH;
 
   private static bool HasAllDigitsEqual(string cpf) => 
     cpf.Distinct().Count() == 1;
+    
+  private string GetMaskedCpf(string cpf) => 
+    string.Format(MASKED_CPF_FORMAT, cpf.Substring(6, 3), cpf.Substring(9, 2));
 
   private static string GetDigit(int sum) 
   {
@@ -82,12 +93,6 @@ public sealed class CPFValidator : DataValidation
 		var secondDigit = GetDigit(secondDigitWeightSum);
 
 		return cpf.EndsWith(firstDigit + secondDigit);
-  }
-
-  private string GetMaskedCpf()
-  {
-    var cpf = CleanedInput;
-    return !IsValid ? UNEXPECTED_INPUT : string.Format(MASKED_CPF_FORMAT, cpf.Substring(6, 3), cpf.Substring(9, 2));
   }
   #endregion
 }
