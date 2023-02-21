@@ -7,6 +7,7 @@ namespace Take.Blip.Utils.Models.Validators;
 
 public sealed class CPFValidator : DataValidator
 {  
+  private const string ERROR_IDENTIFIER = "cpfValidationError";
   private const int CPF_LENGTH = 11;
   private const string CPF_FORMAT = "{0}.{1}.{2}-{3}";
   private const string MASKED_CPF_FORMAT = "***.***.{0}-{1}";
@@ -33,6 +34,8 @@ public sealed class CPFValidator : DataValidator
   protected override string Cleaner(string input) => 
     Regex.Replace(input.Trim(), @"\D+", "", RegexOptions.IgnoreCase);
 
+  protected override string SetErrorIdentifer() => ERROR_IDENTIFIER;
+
   public override BaseValidationResponse ProcessValidation()
   {
     var validation = (ValidationResponse) base.ProcessValidation();
@@ -56,7 +59,7 @@ public sealed class CPFValidator : DataValidator
   private string GetMaskedCpf(string cpf) => 
     string.Format(MASKED_CPF_FORMAT, cpf.Substring(6, 3), cpf.Substring(9, 2));
 
-  private static string GetDigit(int sum) 
+  private static string GetVerificationDigit(int sum) 
   {
     var rest = sum % 11;
 
@@ -65,7 +68,7 @@ public sealed class CPFValidator : DataValidator
     return digit.ToString();
   }
 
-  private static int MakeSum(string cpf, int[] weight) 
+  private static int CalcWeight(string cpf, int[] weight) 
   {
     var sum = 0;
 
@@ -84,13 +87,13 @@ public sealed class CPFValidator : DataValidator
 
 		var tempCpf = cpf.Substring(0, 9);
 		
-    var firstDigitWeightSum = MakeSum(tempCpf, FIRST_WEIGHT);		
-		var firstDigit = GetDigit(firstDigitWeightSum);
+    var firstDigitWeightSum = CalcWeight(tempCpf, FIRST_WEIGHT);		
+		var firstDigit = GetVerificationDigit(firstDigitWeightSum);
 
 		tempCpf = tempCpf + firstDigit;
 
-		var secondDigitWeightSum = MakeSum(tempCpf, SECOND_WEIGHT);		
-		var secondDigit = GetDigit(secondDigitWeightSum);
+		var secondDigitWeightSum = CalcWeight(tempCpf, SECOND_WEIGHT);		
+		var secondDigit = GetVerificationDigit(secondDigitWeightSum);
 
 		return cpf.EndsWith(firstDigit + secondDigit);
   }

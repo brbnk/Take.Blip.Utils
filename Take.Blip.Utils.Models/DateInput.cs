@@ -4,6 +4,7 @@ namespace Take.Blip.Utils.Models;
 
 public sealed class DateInput : DataValidator
 {
+  private const string ERROR_IDENTIFIER = "dateValidationError";
   private const string FULL_DATETIME_FORMAT = "dd/MM/yyyy HH:mm:ss";
   private const string DATE_FORMAT = "dd/MM/yyyy";
 
@@ -17,6 +18,8 @@ public sealed class DateInput : DataValidator
 
   protected override string Formatter(string input) =>
     _dateTimeOffset.ToString(FULL_DATETIME_FORMAT);
+
+  protected override string SetErrorIdentifer() => ERROR_IDENTIFIER;
 
   protected override bool Validator(string input) =>
     DateTimeOffset.TryParse(input, out _dateTimeOffset);
