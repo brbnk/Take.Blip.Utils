@@ -13,12 +13,13 @@ public abstract class DataValidator : IValidationResponse
 
   public DataValidator(string input)
   {
-    _input = input;
+    _input = input ?? "";
   }
 
   protected abstract string Cleaner(string input);
   protected abstract string Formatter(string cleanedInput);
   protected abstract bool Validator(string cleanedInput);
+  protected abstract string SetErrorIdentifer();
   protected virtual string Responser(string cleanedInput) => cleanedInput;
   
   private string CleanInput(Func<string, string> cleaner) 
@@ -37,6 +38,9 @@ public abstract class DataValidator : IValidationResponse
   private string GetValue(Func<string, string> responser) =>
     _isValid ? responser(_cleanedInput) : Constants.UNEXPECTED_INPUT;
 
+  private string GetErrorIdentifier(Func<string> setErrorIdentifier) =>
+    _isValid ? null : setErrorIdentifier();
+
   public virtual BaseValidationResponse ProcessValidation() 
   {
     var cleanedInput = CleanInput(Cleaner);
@@ -47,12 +51,15 @@ public abstract class DataValidator : IValidationResponse
     
     var value = GetValue(Responser);
 
+    var errorIdetifier = GetErrorIdentifier(SetErrorIdentifer);
+
     var data = new ValidationData 
     {
       Input = _input,
       IsValid = _isValid,
       Formatted = formatted,
-      Value = value
+      Value = value,
+      ErrorIdentifier = errorIdetifier
     };
 
     var response = new ValidationResponse { Data = data };

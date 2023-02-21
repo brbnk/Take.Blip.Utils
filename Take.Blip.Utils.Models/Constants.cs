@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace Take.Blip.Utils.Models;
 
 public static class Constants
@@ -9,4 +11,5 @@ public static class Constants
   public const string UNEXPECTED_INPUT = "input inesperado";
   public const string DEFAULT_CULTURE_INFO_NAME = "pt-BR";
   public const string DEFAULT_MONEY_FORMAT = "{0:C}";
+  public const RegexOptions DEFAULT_REGEX_OPTIONS = RegexOptions.IgnoreCase | RegexOptions.Multiline;
 }

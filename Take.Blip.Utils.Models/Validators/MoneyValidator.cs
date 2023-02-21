@@ -7,6 +7,8 @@ namespace Take.Blip.Utils.Models.Validators;
 
 public sealed class MoneyValidator : DataValidator
 {
+
+  private const string ERROR_IDENTIFIER = "moneyValidationError";
   private decimal _moneyInput;
 
   public MoneyValidator(string input) : base(input)
@@ -45,6 +47,8 @@ public sealed class MoneyValidator : DataValidator
   }
 
   protected override string Responser(string cleanedInput) => cleanedInput.Replace(",", ".");
+
+  protected override string SetErrorIdentifer() => ERROR_IDENTIFIER;
 
   public override BaseValidationResponse ProcessValidation()
   {

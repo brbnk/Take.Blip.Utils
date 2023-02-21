@@ -14,6 +14,7 @@ public class ValidationData
     IsValid = data.IsValid;
     Formatted = data.Formatted;
     Value = data.Value;
+    ErrorIdentifier = data.ErrorIdentifier;
   }
 
   [JsonProperty("input")]
@@ -27,4 +28,8 @@ public class ValidationData
 
   [JsonProperty("value")]
   public string Value { get; set; }
+
+  [JsonProperty("error_identifier")]
+  public string ErrorIdentifier { get; set; }
+
 }

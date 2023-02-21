@@ -40,4 +40,13 @@ public sealed class DataValidatorController : ControllerBase
 
     return Ok(data);
   }
+
+  [HttpGet("yesOrNo")]
+  public IActionResult ValidateYesOrNo([FromQuery] string input)
+  {
+    var data = _dataValidatorFacade
+      .Validate(typeof(YesOrNoValidation), input);
+
+    return Ok(data);
+  }
 }
